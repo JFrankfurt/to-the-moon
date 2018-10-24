@@ -58,8 +58,7 @@ if (!dev) {
     sessionOptions.cookie.secure = true // sets cookie over HTTPS only
 }
 
-const sessionMiddleware = session(sessionOptions)
-server.use(sessionMiddleware)
+server.use(session(sessionOptions))
 
 api(server)
 

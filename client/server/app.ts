@@ -29,10 +29,10 @@ app.prepare().then(() => {
     server.get('/', async (req: any, res) => {
         console.log(req.headers)
         // send the user here to pay for their next game
-        let redirectUrl = 'game'
+        let redirectUrl = 'auth/game'
         // send the user here to play a game
         if (req.user) {
-            redirectUrl = `arcade/${req.user.invoiceId}`
+            redirectUrl = `game/${req.user.invoiceId}`
         }
         res.redirect(`${ROOT_URL}/${redirectUrl}`)
     })

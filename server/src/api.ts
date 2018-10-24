@@ -1,5 +1,5 @@
-import express from 'express'
+import {Express} from 'express'
 
-export default function api(server: express.Express) {
-    server.get('endpoint', () => { return })
+export default (server: Express) => {
+    server.get('endpoint', (_, res) => res.status(200).send('api access only'))
 }

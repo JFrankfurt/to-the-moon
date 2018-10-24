@@ -1,41 +1,40 @@
-import {AUTO, Game} from 'phaser'
+import {CANVAS, Game} from 'phaser'
 import React, {Component} from 'react'
-import create from './create'
-import preload from './preload'
-import update from './update'
+import {BootScene, LeaderBoard, Level, MainMenu} from './scenes'
 
 const config = (canvas: HTMLCanvasElement) => ({
-    canvas,
-    type: AUTO,
-    width: 800,
-    height: 600,
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: { y: 200 },
-        },
+  canvas,
+  type: CANVAS,
+  width: 800,
+  height: 600,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: {y: 0},
     },
-    scene: {
-        create,
-        preload,
-        update,
-    },
+  },
+  scene: [
+    BootScene,
+    MainMenu,
+    Level,
+    LeaderBoard,
+  ],
 })
 
 export default class extends Component<any, any> {
-    private canvasRef: HTMLCanvasElement | null
+  private canvasRef: HTMLCanvasElement | null
 
-    constructor(props: any) {
-        super(props)
-        this.canvasRef = null
-    }
+  constructor(props: any) {
+    super(props)
+    this.canvasRef = null
+  }
 
-    public componentDidMount() {
-        const game = new Game(config(this.canvasRef as HTMLCanvasElement))
-        console.log(game)
-    }
+  public componentDidMount() {
+    const game = new Game(config(this.canvasRef as HTMLCanvasElement))
+    console.log(game)
+  }
 
-    public render() {
-        return <canvas ref={el => this.canvasRef = el}/>
-    }
+  public render() {
+    return <canvas ref={el => this.canvasRef = el}/>
+  }
 }

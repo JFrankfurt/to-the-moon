@@ -23,7 +23,7 @@ export default () =>
             .qr-codes {
                 align-items: center;
                 display: flex;
-                justify-content: space-between;
+                justify-content: space-around;
             }
         `}</style>
         </div>
