@@ -1,36 +1,28 @@
-import mongoSessionStore from 'connect-mongo'
-import cors from 'cors'
+import * as mongoSessionStore from 'connect-mongo'
+import * as cors from 'cors'
 import 'dotenv/config'
-import express from 'express'
-import session from 'express-session'
-import helmet from 'helmet'
-import mongoose from 'mongoose'
-
+import * as express from 'express'
+import * as session from 'express-session'
+import * as helmet from 'helmet'
+import * as mongoose from 'mongoose'
 import api from './api'
 
 const dev = process.env.NODE_ENV !== 'production'
 const port = process.env.PORT || 8000
-const { PRODUCTION_URL_APP, PRODUCTION_URL_API } = process.env
+const {PRODUCTION_URL_APP, PRODUCTION_URL_API} = process.env
 const ROOT_URL = dev ? `http://localhost:${port}` : PRODUCTION_URL_API
 
 const MONGO_URL = dev ? process.env.MONGO_URL_TEST : process.env.MONGO_URL
 
-const options = {
+mongoose.connect(MONGO_URL, {
     useNewUrlParser: true,
-    useCreateIndex: true,
     useFindAndModify: false,
-}
-
-mongoose.connect(
-    MONGO_URL,
-    options,
-)
+})
 
 const server = express()
-
 const appPort = process.env.APP_PORT || 3000
 const origin = dev ? `http://localhost:${appPort}` : PRODUCTION_URL_APP
-server.use(cors({ origin, credentials: true }))
+server.use(cors({origin, credentials: true}))
 
 server.use(helmet())
 
