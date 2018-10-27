@@ -3,6 +3,7 @@
 tmp/
 npm-debug.log
 .DS_Store
+*.cert
 
 .idea
 .build/*
