@@ -1,19 +1,15 @@
-import * as cors from 'cors'
+// import * as cors from 'cors'
 import 'dotenv/config'
 import * as express from 'express'
 import * as helmet from 'helmet'
 import * as mongoose from 'mongoose'
 import api from './api'
 
-const dev = process.env.NODE_ENV !== 'production'
 const port = process.env.PORT || 8000
-const {PRODUCTION_URL_APP, PRODUCTION_URL_API} = process.env
-const ROOT_URL = dev ? `http://localhost:${port}` : PRODUCTION_URL_API
-
+const ROOT_URL = `http://localhost:${port}`
 const server = express()
-const appPort = process.env.APP_PORT || 3000
-const origin = dev ? `http://localhost:${appPort}` : PRODUCTION_URL_APP
-server.use(cors({origin, credentials: true}))
+
+// server.use(cors())
 
 server.use(helmet())
 
@@ -28,7 +24,7 @@ api(server)
 
 server.get('*', (_, res) => res.sendStatus(403))
 
-server.listen(port, err => {
+server.listen(port as number, '0.0.0.0', err => {
     if (err) {
         throw err
     }

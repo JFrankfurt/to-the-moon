@@ -23,7 +23,6 @@ export default (props: LayoutProps) =>
                 display: flex;
                 min-height: 400px;
                 min-width: 375px;
-                width: 50vw;
             }
         `}</style>
     </div>

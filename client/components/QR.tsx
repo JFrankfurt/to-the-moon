@@ -46,10 +46,12 @@ class QR extends Component<QRCodeProps, any> {
                 : <h3>Pay $0.25 to play MoonBase</h3>}
             {paid
                 ? <CheckCircleOutline style={{fontSize: '36px'}}/>
-                : <QRCode
-                    style={{cursor: 'pointer'}}
-                    value={this.state.value}
-                    onClick={this.copy}/>}
+                : <div className='qr-code' onClick={this.copy}>
+                    <QRCode
+                        size={200}
+                        style={{cursor: 'pointer'}}
+                        value={this.state.value} />
+                </div>}
             <style jsx>{`
                 .root {
                     align-items: center;
@@ -70,6 +72,11 @@ class QR extends Component<QRCodeProps, any> {
                       background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
                       background-size: 1800% 1800%;
                       cursor: pointer;
+                }
+                .qr-code {
+                    background-color: white;
+                    border-radius: 6px;
+                    padding: 10px;
                 }
                 @keyframes rainbow {
                     0%{background-position: 0% 82%}
