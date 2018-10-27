@@ -2,7 +2,7 @@ import {Express} from 'express'
 import * as grpc from 'grpc'
 import * as protoLoader from '@grpc/proto-loader'
 import {readFileSync} from 'fs'
-import Payment from './db/payment'
+// import Payment from './db/payment'
 
 // Due to updated ECDSA generated tls.cert we need to let gprc know that
 // we need to use that cipher suite otherwise there will be a handhsake
@@ -21,34 +21,35 @@ const macaroonCreds = grpc.credentials.createFromMetadataGenerator(
 const credentials = grpc.credentials.combineChannelCredentials(sslCreds, macaroonCreds)
 const packageDefinition = protoLoader.loadSync('rpc.proto')
 const {lnrpc} = grpc.loadPackageDefinition(packageDefinition)
-const lightning = new lnrpc.Lightning('localhost:10009', credentials)
+const lightning = new lnrpc.Lightning('lnd:10009', credentials)
 
-const subscription = lightning.subscribeInvoices({})
-subscription
-    .on('data', async (invoice) => {
-        const {description, id: invoiceId} = invoice
-        console.log(description, invoice, invoiceId)
-        try {
-            const payment = await Payment.findById(description)
-            console.log(payment)
-            // await payment.save()
-        } catch (error) {
+// const subscription = lightning.subscribeInvoices({})
+// subscription
+//     .on('data', async (invoice) => {
+//         const {description, id: invoiceId} = invoice
+//         console.log(description, invoice, invoiceId)
+//         try {
+//             const payment = await Payment.findById(description)
+//             console.log(payment)
+//             // await payment.save()
+//         } catch (error) {
 
-        }
-    })
-    .on('end', () => {
-        // The server has finished sending
-    })
-    .on('status', status => {
-        // Process status
-        console.log('Current status' + status)
-    })
+//         }
+//     })
+//     .on('end', () => {
+//         // The server has finished sending
+//     })
+//     .on('status', status => {
+//         // Process status
+//         console.log('Current status' + status)
+//     })
 
 export default (server: Express) => {
     server
         .get('/node', (req, res) => {
-            lightning.getInfo({}, (_, {identityPubkey}) => {
-                res.send(`${identityPubkey}@${req.connection.remoteAddress}:${9735}`) // this is a guess
+            lightning.getInfo({}, (response) => {
+                console.log(response)
+                res.send(`@${req.connection.remoteAddress}:${9735}`) // this is a guess
             })
         })
         .get('/invoice', (_, res) => {
