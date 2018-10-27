@@ -14,13 +14,14 @@ export default (props: LayoutProps) =>
                 align-items: center;
                 background-color: black;
                 display: flex;
+                font-family: sans-serif;
                 height: 100vh;
                 justify-content: center;
                 width: 100vw;
             }
             .container {
                 display: flex;
-                min-height: 600px;
+                min-height: 400px;
                 min-width: 375px;
                 width: 50vw;
             }
