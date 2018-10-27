@@ -6,7 +6,7 @@ services:
         dockerfile: server/Dockerfile
       restart: always
       ports:
-        - "8080:8080"
+        - "8090:8080"
       volumes:
         - ./server/src:/server/src
         - ./server/.env:/server/.env
@@ -65,8 +65,6 @@ services:
     lnd_btc:
       extends: lnd
       container_name: lnd_btc
-      links:
-          - "btcd:blockchain"
 
 volumes:
   lnd_data:
