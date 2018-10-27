@@ -1,8 +1,6 @@
 FROM node:10
+COPY ./server /server
+EXPOSE 8080
 WORKDIR /server
-COPY . /server
-COPY . /.lnd
-RUN yarn && yarn build
-COPY . /production-server
-RUN yarn start
-EXPOSE 4000
+RUN yarn # && yarn build
+CMD ["yarn", "dev"]

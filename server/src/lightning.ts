@@ -9,9 +9,9 @@ import Payment from './db/payment'
 // error when we communicate with the lnd rpc server.
 process.env.GRPC_SSL_CIPHER_SUITES = 'HIGH+ECDSA'
 
-const lndCert = readFileSync(`${process.cwd()}/${process.env.lndCert}`)
+const lndCert = readFileSync(process.env.lndCert)
 const sslCreds = grpc.credentials.createSsl(lndCert)
-const macaroon = readFileSync(`${process.cwd()}/${process.env.lndAdminMacaroon}`).toString('hex')
+const macaroon = readFileSync(process.env.lndAdminMacaroon).toString('hex')
 const metadata = new grpc.Metadata()
 metadata.add('macaroon', macaroon)
 const macaroonCreds = grpc.credentials.createFromMetadataGenerator(
