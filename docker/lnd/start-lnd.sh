@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
 # exit from script if error was raised.
-set -e
+set -ex
+
+# If this cert exists then we should copy it to the data directory
+mkdir -p /data
+cp /secure/tls.cert /data
 
 # error function is used within a bash function in order to send the error
 # message directly to the stderr output and exit.
@@ -54,7 +58,10 @@ exec lnd \
     --logdir="/data" \
     --datadir="/data" \
     --tlscertpath="/data/tls.cert" \
+    --tlskeypath="/secure/tls.key" \
     --adminmacaroonpath="/data/admin.macaroon" \
+    --rpclisten="0.0.0.0:10009" \
+    --listen="0.0.0.0:9735" \
     "--$CHAIN.active" \
     "--$CHAIN.$NETWORK" \
     "--$CHAIN.node"="btcd" \

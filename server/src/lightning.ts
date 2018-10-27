@@ -1,3 +1,4 @@
+import * as path from 'path'
 import {Express} from 'express'
 import * as grpc from 'grpc'
 import * as protoLoader from '@grpc/proto-loader'
@@ -11,7 +12,8 @@ process.env.GRPC_SSL_CIPHER_SUITES = 'HIGH+ECDSA'
 
 const lndCert = readFileSync(process.env.lndCert)
 const sslCreds = grpc.credentials.createSsl(lndCert)
-const macaroon = readFileSync(process.env.lndAdminMacaroon).toString('hex')
+const macaroonPath = path.resolve(process.env.lndAdminMacaroon)
+const macaroon = readFileSync(macaroonPath).toString('hex')
 const metadata = new grpc.Metadata()
 metadata.add('macaroon', macaroon)
 const macaroonCreds = grpc.credentials.createFromMetadataGenerator(
@@ -47,9 +49,12 @@ const lightning = new lnrpc.Lightning('lnd:10009', credentials)
 export default (server: Express) => {
     server
         .get('/node', (req, res) => {
-            lightning.getInfo({}, (response) => {
-                console.log(response)
-                res.send(`@${req.connection.remoteAddress}:${9735}`) // this is a guess
+            lightning.getInfo({}, (err, { identityPubkey }) => {
+                if (err) {
+                    console.log('Had an error', err)
+                    res.status(500).send('Server error')
+                }
+                res.send(`${identityPubkey}@${req.connection.remoteAddress}:${9735}`) // this is a guess
             })
         })
         .get('/invoice', (_, res) => {

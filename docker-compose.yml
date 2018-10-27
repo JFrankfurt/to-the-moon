@@ -1,4 +1,5 @@
 version: '2'
+
 services:
     app:
       build:
@@ -7,15 +8,24 @@ services:
       restart: always
       ports:
         - "8090:8080"
+      networks:
+        - moonbase
       volumes:
         - ./server/src:/server/src
         - ./server/.env:/server/.env
         - lnd_data:/data
+      # environment:
+      #   - GRPC_VERBOSITY=DEBUG
+      #   - GRPC_TRACE=all
       links:
         - mongo
+
     mongo:
       image: 'mongo:3.6.3'
       working_dir: '/home/db'
+      networks:
+        - moonbase
+
     # btc is an image of bitcoin node which used as base image for btcd and
     # btccli. The environment variables default values determined on stage of
     # container start within starting script.
@@ -24,8 +34,8 @@ services:
       build:
         context: docker/btcd
       volumes:
-            - shared:/rpc
-            - bitcoin:/data
+        - shared:/rpc
+        - bitcoin:/data
       environment:
         - RPCUSER
         - RPCPASS
@@ -37,6 +47,8 @@ services:
         environment:
           - DEBUG
           - MINING_ADDRESS
+        networks:
+          - moonbase
         entrypoint: ["./start-btcd.sh"]
 
     lnd:
@@ -49,22 +61,14 @@ services:
           - RPCPASS
           - NETWORK
           - CHAIN
-          - DEBUG
+          - DEBUG=trace
         volumes:
             - shared:/rpc
             - lnd_data:/data
+        networks:
+          - moonbase
         entrypoint: ["./start-lnd.sh"]
 
-    btcctl:
-        extends: btc
-        container_name: btcctl
-        links:
-            - "btcd:rpcserver"
-        entrypoint: ["./start-btcctl.sh"]
-
-    lnd_btc:
-      extends: lnd
-      container_name: lnd_btc
 
 volumes:
   lnd_data:
@@ -77,3 +81,6 @@ volumes:
   # during btcd container recreation.
   bitcoin:
     driver: local
+
+networks:
+  moonbase:
